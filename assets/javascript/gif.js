@@ -1,98 +1,108 @@
 $(document).ready(function()
 {
 	// Initial array of topics
-			var topics = ['Smurfs', 'Sponge Bob', 'Mickey Mouse', 'Minions', 'Tom and Jerry'];
+	var topics = ['Mickey Mouse', 'Donald Duck', 'Elsa', 'Buzz Lightyear', 'Winnie the Pooh'];
 
-     	function displayGif() {
-      		$('#gifView').empty();
-        	var topics = $(this).attr("data-name");
-        
-        	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topics + "&api_key=dc6zaTOxFJmzC&limit=10";
+      function displayGif(){
+		var topics = $(this).attr("data-name");
+		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topics + "&api_key=dc6zaTOxFJmzC&limit=10";
 
-      		//   // Creating an AJAX call for the specific movie button being clicked
-     		$.ajax({
-          		url: queryURL,
-          		method: "GET"
-     		}).done(function(response) {
-
-     		// Creates a generic div to hold the topic
-				var topicDiv = $('<div class="topicImage">');
-					console.log(response);
-				for (i=0; i < response.data.length; i++) 
-				{
-				var stillImage = response.data[i].images.fixed_height_still.url;
-				// console.log(stillImage);
-
-				var playImage = response.data[i].images.fixed_height.url;
-				// console.log("Moving"+ playImage);
-
-				var rating = response.data[i].rating;
-					console.log(rating);
-
-				// Creates an element to have the rating displayed
-				var p = $('<p>').text( "Rating: " + rating.toUpperCase());
-					topicDiv.append(p);
-
-				var image = $("<img>").attr("src", stillImage); //Passes still image link to the image src
-				image.attr("playsrc", playImage); //Creates playsrc attr and passes moving gif link to the image playsrc
-				image.attr("stopsrc", stillImage); //Creates stopsrc attr and passes still image link to the image stopsrc
+		$.ajax({
+			url : queryURL,
+			method: "GET"
+		}).done(function(response){
 				
-				topicDiv.append(image);
+			var results = response.data;
 
-				// Puts the entire topic above the previous celebrities.
-				$('#gifView').append(topicDiv);
+				gifPlay2();
+				$(".topicButton").on("click", gifPlay2);
 
-				image.addClass('playClickedGif'); // Added a class to image tag
+			function gifPlay2(){
+				$("#gifView").empty();
+
+				for (var k = 0; k <results.length; k++){
+
+					var topicDiv = $("<div id='topicDivCSS'>");
+
+					var subDiv =$("<div class='col-md-4'>");
 
 
-				}	
-			});
+
+					var stillURL = results[k].images.fixed_height_still.url;
+	
+					var animatedURL = results[k].images.fixed_height.url;
+				
+					var image = $("<img src>").attr({"src": stillURL,
+					 	"data-changetostill": stillURL,
+					 	"data-changetoanimate": animatedURL,
+					 	"data-tochangestate": "stillstring"
+					 							});
+
+					image.addClass("gif");
+
+					subDiv.append(image);
+
+					// topicDiv.append(image);
+
+					var gifRating = results[k].rating;
+	
+					var gifRatingText = $("<p>").text("Ratings: " + gifRating);	
+
+					subDiv.append(gifRatingText);
+
+					topicDiv.append(subDiv);
+
+					$("#gifView").append(topicDiv);
+
+				};//got the for loop to work
+			}//gifPlay2 contains all 10 images to populate and also the ratings
+
+		})//ajax closer;
+	}
+	function changeGif(){
+		//this now sets up the if else statement where the data is already set earlier
+
+		var varState = $(this).attr("data-tochangestate");//stillstring
+ 			//the variable state is set to a current state of stillstrings
+		if (varState === "stillstring"){
+		var gifMove = $(this).attr("data-changetoanimate");
+			//grab the image that is animated
+		$(this).attr("src", gifMove);
+			//want to change this to the animated
+		$(this).attr("data-tochangestate", "animated");	
 		}
+		//else should be the opposite it should have changed all the still to animated
+		//which then changed the data-tochangestate into animated
+		else {
+		var gifStill = $(this).attr("data-changetostill");
+			//which now since it is in the state of animated we can switch to a still gif
+		$(this).attr("src", gifStill);
+			//and also now change the data to turn into toChangeState.
+		$(this).attr("data-tochangestate", "stillstring");
+		};								
+	}//closer for the changeGif
 
-	   	function swapGif()
-		{
-				//Play Image 
-				var playImage = $(this).attr('playsrc');
-					console.log(playImage);
-				//Stop Image 
-				var stopImage = $(this).attr('stopsrc');
-					console.log(stopImage);
-				//Swap image condition
-				if (playImage == $(this).attr('src'))
-				{
-				//This changes the image src
-				$(this).attr('src', stopImage);
-			}
-				else
-				{
-				$(this).attr('src', playImage);
-				}
-		}
-				// Generic function for displaying topic data 
-		function renderButtons(){
-				// Deletes the topics prior to adding new topics (this is necessary otherwise you will have repeat buttons)
-				$("#topicsView").empty();
-				// Loops through the array of topics
-				for (var i = 0; i<topics.length; i++){
-				// Dynamically generate buttons for each topic in the array
-				var b = $("<button>"); 
-				b.addClass("topicButton");
-				b.addClass('btn btn-warning'); // Added a class 
-				b.attr("data-name",topics[i]);
-				b.text(topics[i]);
-				$("#topicsView").append(b); // Added the button to the HTML
-				}	
-		}
-				// This function handles events where one button is clicked
-				$("#addTopic").on("click", function(event){
-					event.preventDefault();
-				// This line of code will grab the input from the textbox
-				var newGif = $("#topicInput").val().trim();
-					topics.push(newGif);
-				renderButtons();
-				})
+	function renderButtons(){
+		$("#topicsView").empty();
+		for (var i = 0; i<topics.length; i++){
+		var b = $("<button>");
+		b.addClass("topicButton");
+		b.addClass('btn btn-warning');
+		b.attr("data-name",topics[i]);
+		b.text(topics[i]);
+		$("#topicsView").append(b);
+		}	
+	}
 
-				renderButtons();
-				$(document).on("click", ".topicButton", displayGif);
-				$(document).on('click', '.playClickedGif', swapGif);
+	$("#addTopic").on("click", function(event){
+		event.preventDefault();
+		var newGif = $("#topicInput").val().trim();
+		topics.push(newGif);
+		renderButtons();
+	})
+
+renderButtons();
+$(document).on("click", ".topicButton", displayGif);
+$(document).on("click", ".gif", changeGif);
+
 });

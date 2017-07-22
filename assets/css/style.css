@@ -28,4 +28,9 @@ p{
 	font-weight: bold;
 	font-family: Georgia;
 }
+ .jumbotron{
+      background-image: url("../images/disney2.jpg");
+      height: 538px;
+      background-size: 1150px;
+      background-repeat: no-repeat;
 	
