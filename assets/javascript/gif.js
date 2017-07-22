@@ -93,6 +93,7 @@ $(document).ready(function()
 		$("#topicsView").append(b);
 		}	
 	}
+	
 
 	$("#addTopic").on("click", function(event){
 		event.preventDefault();
