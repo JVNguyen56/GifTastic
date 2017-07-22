@@ -7,7 +7,7 @@ $(document).ready(function()
       		$('#gifView').empty();
         	var topics = $(this).attr("data-name");
         
-        	var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topics + "&api_key=dc6zaTOxFJmzC&limit=10";
+        	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topics + "&api_key=dc6zaTOxFJmzC&limit=10";
 
       		//   // Creating an AJAX call for the specific movie button being clicked
      		$.ajax({
@@ -69,7 +69,7 @@ $(document).ready(function()
 				}
 		}
 				// Generic function for displaying topic data 
-	function renderButtons(){
+		function renderButtons(){
 				// Deletes the topics prior to adding new topics (this is necessary otherwise you will have repeat buttons)
 				$("#topicsView").empty();
 				// Loops through the array of topics
@@ -82,7 +82,7 @@ $(document).ready(function()
 				b.text(topics[i]);
 				$("#topicsView").append(b); // Added the button to the HTML
 				}	
-	}
+		}
 				// This function handles events where one button is clicked
 				$("#addTopic").on("click", function(event){
 					event.preventDefault();
@@ -90,7 +90,7 @@ $(document).ready(function()
 				var newGif = $("#topicInput").val().trim();
 					topics.push(newGif);
 				renderButtons();
-	})
+				})
 
 				renderButtons();
 				$(document).on("click", ".topicButton", displayGif);
