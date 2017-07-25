@@ -96,8 +96,13 @@ $(document).ready(function()
 	
 
 	$("#addTopic").on("click", function(event){
+
 		event.preventDefault();
 		var newGif = $("#topicInput").val().trim();
+		if (newGif === ""){
+                alert("Search could not be found. Try a new search.");
+                location.reload();
+            }
 		topics.push(newGif);
 		renderButtons();
 	})
